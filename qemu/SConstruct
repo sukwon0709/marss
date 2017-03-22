@@ -140,6 +140,9 @@ comm_files += " migration-exec.c migration-unix.c migration-fd.c"
 comm_files += " block-migration.c blockdev.c cursor.c "
 comm_files += " qemu-error.c input.c pflib.c "
 
+# SPICE
+comm_files += " ui/spice-core.c ui/spice-input.c ui/spice-display.c spice-qemu-char.c"
+
 # We only add POSIX/Linux related files
 comm_files += " os-posix.c"
 
@@ -172,6 +175,8 @@ if 'pa' in env and env['pa']:
     audio_pt = True
     audio_pt_int = True
     audio_files += " paaudio.c"
+if 'spice' in env and env['spice']:
+    audio_files += " spiceaudio.c"
 
 if audio_pt:
     comm_ldflags = "-pthread"
@@ -476,9 +481,11 @@ for hw_f in Split(hw_files):
 hw_files_o = env.Object(Split(obj_files) + hw_files_list + Split(ide_files))
 trace_o = env.Object(trace_c)
 
+print qemu_prog_name
 env.Append(LIBPATH = "%s/../plugins" % env['source_path'])
 env.Append(LINKFLAGS = "-Wl,-rpath=%s/../plugins" % env['source_path'])
 env.Append(LINKFLAGS = "-Wl,--no-as-needed")
+env.Append(LINKFLAGS = "-L/usr/lib/x86_64-linux-gnu -lspice-server")
 env.Append(LIBS = plugins)
 env['ARLIB'] = libqemu_comm + libqemu + ptlsim_lib
 qemu_bin = env.QEMU_BIN(qemu_prog_name, hw_files_o + pc_bios_objs +

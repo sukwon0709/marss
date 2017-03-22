@@ -553,6 +553,7 @@ env['softmmu']=True
 # blobs=True
 # fdt=True
 # sdl_x11=False
+env['spice']=True
 
 audio_drv_list = "oss"
 audio_possible_drivers = "oss sdl esd pa fmod"
@@ -569,8 +570,10 @@ else:
 CFLAGS = "%s -fno-strict-aliasing" % (env['CCFLAGS'])
 CFLAGS += " -Wall -Wundef -Wendif-labels -Wwrite-strings -Wmissing-prototypes -Wstrict-prototypes -Wredundant-decls"
 CFLAGS += " -m64"
+CFLAGS += " -I/usr/include/spice-server -I/usr/include/spice-1"
 #LDFLAGS = "-g" 
 LDFLAGS = " -Wl,--warn-common -m64"
+LDFLAGS += " -L/usr/lib/x86_64-linux-gnu -lspice-server"
 host_guest_base = True
 
 guest_base = host_guest_base
@@ -900,7 +903,7 @@ write_config_y_list = ['linux', 'profiler', 'slirp', 'vde', 'mixemu',
         'dup3', 'inotify', 'curl', 'brlapi', 'bluez', 'xen', 'iothread',
         'linux_aio', 'iovec', 'preadv', 'fdt', 'fdatasync', 'zero_malloc',
         'sync_file_range', 'fiemap', 'inotify1', 'attr', 'signalfd',
-        'madvise', 'posix_madvise']
+        'madvise', 'posix_madvise', 'spice']
 for conf_opt in write_config_y_list:
     if env[conf_opt] == True:
         config_mak.write("CONFIG_%s=y\n" % conf_opt.upper())
